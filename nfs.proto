@@ -1,0 +1,187 @@
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.nfs";
+option java_outer_classname = "NfsProto";
+option objc_class_prefix = "HLW";
+
+package nfs;
+
+// The grpcNfs service definition.
+service grpcNfs { 
+  rpc getattr_request(GetattrRequest) returns (GetattrReply) { }
+  rpc readdir_request(ReaddirRequest) returns (ReaddirReply) { }
+  rpc open_request(OpenRequest) returns (OpenReply) { }
+  rpc read_request(ReadRequest) returns (ReadReply) { }
+  rpc mkdir_request(MkdirRequest) returns (MkdirReply) { }
+  rpc rmdir_request(RmdirRequest) returns (RmdirReply) { }
+  rpc create_request(CreateRequest) returns (CreateReply) { }
+  rpc write_request(WriteRequest) returns (WriteReply) { }
+  rpc unlink_request(UnlinkRequest) returns (UnlinkReply) { }
+  rpc truncate_request(TruncateRequest) returns (TruncateReply) { }
+  rpc rename_request(RenameRequest) returns (RenameReply) { }
+  rpc flush_request(FlushRequest) returns (FlushReply) { }
+} // grpcNfs
+
+message Stat {
+  uint32 sta_dev = 1; //device
+  uint32 sta_ino = 2; // inode
+  uint32 sta_mode = 3; // protection
+  uint32 sta_nlink = 4; // number of hard links
+  uint32 sta_uid = 5; // user ID of owner
+  uint32 sta_gid = 6; // group ID of owner
+  uint32 sta_rdev = 7; // device type
+  uint64 sta_size = 8; //total size, in bytes
+  uint32 sta_blksize = 9; //blocksize for filesystem I/O
+  uint64 sta_blocks = 10; //number of blocks allocated
+  int64 sta_atime = 11; // time of last access
+  int64 sta_mtime = 12; // time of last modification
+  int64 sta_ctime = 13; // time of last change
+}
+
+message Dirent {
+    uint32 d_ino = 1;
+    uint32 d_type = 2;
+    string d_name = 3; // char[256]
+    
+    // d_off, d_reclen are not used
+}
+
+
+/*******************************************************
+ * version 3
+ *
+ * Upon reply, the server should set err = -errno on failure,
+ *  and set err = 0 on success.
+ */
+ 
+message GetattrRequest {
+    string path = 1;
+} 
+
+message GetattrReply {
+    int32 err = 1;
+    Stat attr = 2;
+}
+
+message ReaddirRequest {
+    string path = 1;
+}
+
+message ReaddirReply {
+    int32 err = 1;
+    repeated Dirent de = 2;
+}
+
+message OpenRequest {
+    string path = 1;
+    int32 flags = 2;
+}
+
+message OpenReply {
+    int32 err = 1;
+    int32 fh = 2;
+}
+
+message ReadRequest {
+    //string path = 4;
+    int32 size = 1;
+    int32 offset = 2;
+    int32 fh = 3;
+}
+
+message ReadReply {
+    int32 err = 1;
+    bytes data = 2;
+}
+
+message MkdirRequest {
+    string path = 1;
+    int32 mode = 2;
+}
+
+message MkdirReply {
+    int32 err = 1;
+}
+
+message RmdirRequest {
+    string path = 1;
+}
+
+message RmdirReply {
+    int32 err = 1;
+}
+
+message CreateRequest {
+    string path = 1;
+    int32 mode =2;
+    int32 flags = 3;
+}
+
+message CreateReply {
+    int32 err = 1;
+    int32 fh = 2;
+}
+
+message WriteRequest {
+    //string path = 4;
+    int32 offset = 1;
+    bytes data = 2; // use data.size() for size
+    int32 fh = 3;
+}
+
+message WriteReply {
+    int32 err = 1;
+    int32 len = 2; // number of bytes actually written
+}
+
+message UnlinkRequest {
+    string path = 1;
+}
+
+message UnlinkReply {
+    int32 err = 1;
+}
+
+message TruncateRequest {
+    //string path = 3;
+    int32 size = 1;
+    int32 fh = 2;
+}
+
+message TruncateReply {
+    int32 err = 1;
+}
+
+message RenameRequest {
+    string from_name = 1;
+    string to_name = 2;
+}
+
+message RenameReply {
+    int32 err = 1;
+}
+
+message FlushRequest {
+    //string path = 2;
+    int64 fh = 1; // file handle
+}
+
+message FlushReply {
+    int32 err = 1;
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
